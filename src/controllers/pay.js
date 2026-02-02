@@ -5,6 +5,7 @@ export class PayController {
   static async checkoutCounter(c) {
     const tradeId = c.req.param('trade_id');
     const service = new PayService(c.env);
+    const requestId = c.req.header('cf-ray') || '';
     try {
         const result = await service.getCheckoutCounter(tradeId);
         // The original code returns SucJson with data.
@@ -13,16 +14,17 @@ export class PayController {
         // `src/controller/comm/pay_controller.go` likely renders a template OR returns JSON.
         // `src/model/service/pay_service.go` has `GetCheckoutCounterByTradeId` returning `CheckoutCounterResponse`.
         // So it probably returns JSON.
-        return c.json(success(result));
+        return c.json(success(result, 'success', requestId));
     } catch (e) {
-        if (e.code) return c.json(error(e.code, e.message));
-        return c.json(error(Errno.SYSTEM_ERROR, e.message));
+        if (e.code) return c.json(error(e.code, e.message, requestId));
+        return c.json(error(Errno.SYSTEM_ERROR, e.message, requestId));
     }
   }
 
   static async checkStatus(c) {
     const tradeId = c.req.param('trade_id');
     const service = new PayService(c.env);
+    const requestId = c.req.header('cf-ray') || '';
     try {
         const result = await service.checkStatus(tradeId);
         // Logic for CheckStatus return?
@@ -30,10 +32,10 @@ export class PayController {
         // Original: `comm.Ctrl.CheckStatus`.
         // If it's standard BaseCommController, it returns SucJson.
         // I'll return the result from service.
-        return c.json(success(result));
+        return c.json(success(result, 'success', requestId));
     } catch (e) {
-        if (e.code) return c.json(error(e.code, e.message));
-        return c.json(error(Errno.SYSTEM_ERROR, e.message));
+        if (e.code) return c.json(error(e.code, e.message, requestId));
+        return c.json(error(Errno.SYSTEM_ERROR, e.message, requestId));
     }
   }
 }
