@@ -30,6 +30,7 @@ export class PayService {
             trade_id: order.trade_id,
             actual_amount: order.actual_amount,
             token: order.token,
+            currency: order.currency,
             expiration_time: expireAt,
             redirect_url: order.redirect_url
         };
@@ -51,7 +52,8 @@ export class PayService {
         return {
             status: order.status,
             trade_id: order.trade_id,
-            actual_amount: order.actual_amount
+            actual_amount: order.actual_amount,
+            currency: order.currency
         };
     }
 
@@ -62,7 +64,7 @@ export class PayService {
         if (!wallets.results || wallets.results.length === 0) return;
 
         for (const wallet of wallets.results) {
-            console.log(wallet);
+            // console.log(wallet);
             await this.checkWallet(wallet.token);
         }
     }
@@ -177,7 +179,8 @@ ${new Date().toLocaleString()}
             actual_amount: order.actual_amount,
             token: order.token,
             block_transaction_id: order.block_transaction_id,
-            status: order.status
+            status: order.status,
+            currency: order.currency
         };
 
         // Sign

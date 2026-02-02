@@ -149,6 +149,7 @@ export class OrderService {
       amount: req.amount,
       actual_amount: finalAmount,
       token: selectedToken,
+      currency: currency,
       expiration_time: expirationTimestamp, // Return Milliseconds as per Go implementation
       payment_url: `${this.env.APP_URI}/pay/checkout-counter/${tradeId}`
     };
