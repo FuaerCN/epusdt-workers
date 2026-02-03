@@ -5,7 +5,7 @@ import { PayService } from './services/pay.js';
 
 const app = new Hono();
 
-app.get('/', (c) => c.text('hello epusdt, https://github.com/assimon/epusdt'));
+app.get('/', (c) => c.text('hello epusdt-workers, https://github.com/epusdt-workers/epusdt-workers'));
 
 // Pay Routes
 app.get('/pay/checkout-counter/:trade_id', PayController.checkoutCounter);
