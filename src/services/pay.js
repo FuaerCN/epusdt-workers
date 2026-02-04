@@ -61,11 +61,29 @@ export class PayService {
     async checkPayments() {
         // 1. Get enabled wallets
         const wallets = await this.env.DB.prepare('SELECT token FROM wallet_address WHERE status = 1').all();
-        if (!wallets.results || wallets.results.length === 0) return;
+        
+        if (wallets.results && wallets.results.length > 0) {
+            for (const wallet of wallets.results) {
+                // console.log(wallet);
+                await this.checkWallet(wallet.token);
+            }
+        }
 
-        for (const wallet of wallets.results) {
-            // console.log(wallet);
-            await this.checkWallet(wallet.token);
+        // 2. Mark expired orders
+        await this.checkExpiredOrders();
+    }
+
+    async checkExpiredOrders() {
+        try {
+            const expirationTime = parseInt(this.env.ORDER_EXPIRATION_TIME || 10);
+            const now = Date.now();
+            const expiredTime = now - (expirationTime * 60 * 1000);
+
+            await this.env.DB.prepare(
+                'UPDATE orders SET status = 3, updated_at = ? WHERE status = 1 AND created_at < ?'
+            ).bind(now, expiredTime).run();
+        } catch (e) {
+            console.error("Check expired orders failed:", e);
         }
     }
 

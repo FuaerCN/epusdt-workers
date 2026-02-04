@@ -18,6 +18,9 @@ export default {
   fetch: app.fetch,
   async scheduled(event, env, ctx) {
     const service = new PayService(env);
-    ctx.waitUntil(service.checkPayments());
+    ctx.waitUntil(Promise.all([
+      service.checkPayments(),
+      service.checkExpiredOrders(),
+    ]));
   }
 };
