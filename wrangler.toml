@@ -1,4 +1,4 @@
-name = "epusdt-worker"
+name = "epusdt-workers"
 main = "src/index.js"
 compatibility_date = "2024-01-01"
 
